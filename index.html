@@ -2,182 +2,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MALAWIAN VIBES - Music</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#101010;color:white;font-family:Arial,sans-serif}
-header{padding:22px 6%;background:#080808;border-bottom:1px solid #333;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-.logo{font-size:23px;font-weight:900;color:#e6b72e}
-.logo span{color:#fff}
-header small{display:block;color:#aaa;font-size:11px;letter-spacing:2px;margin-top:5px}
-nav a{color:white;text-decoration:none;margin:8px;font-size:14px}
-.hero{padding:55px 6%;background:linear-gradient(120deg,#29200b,#111 65%);text-align:center}
-.hero h1{font-size:38px;margin:0 0 12px}
-.hero h1 span{color:#e6b72e}
-.hero p{color:#bbb}
-.search{width:90%;max-width:500px;padding:15px;border-radius:30px;border:1px solid #555;background:#171717;color:white;margin-top:20px}
-.container{padding:30px 6%}
-.section-title{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap}
-.section-title h2{color:#e6b72e}
-button,.upload{background:#e6b72e;color:#111;border:0;padding:12px 18px;border-radius:7px;font-weight:bold;cursor:pointer}
-.upload{display:inline-block;margin:10px 0}
-#songs{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:18px;margin-top:20px}
-.song{background:#1b1b1b;border:1px solid #333;border-radius:12px;padding:15px}
-.cover{height:145px;border-radius:9px;background:linear-gradient(135deg,#a87812,#241a08);display:flex;align-items:center;justify-content:center;font-size:48px}
-.song h3{margin:12px 0 5px}
-.song p{color:#aaa;font-size:13px}
-.song button{width:100%;margin-top:8px}
-.player{position:sticky;bottom:0;background:#080808;border-top:2px solid #d5a51f;padding:15px 6%;display:flex;align-items:center;gap:15px;flex-wrap:wrap}
-#now{flex:1;min-width:150px}
-#now small{display:block;color:#aaa;margin-top:5px}
-.controls{display:flex;gap:8px;align-items:center}
-.controls button{padding:10px 13px}
-input[type=range]{accent-color:#e6b72e;width:100px}
-#progress{width:100%;accent-color:#e6b72e}
-footer{text-align:center;color:#888;padding:30px}
-@media(max-width:500px){.hero h1{font-size:28px}.player{gap:10px}.controls button{padding:9px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Malawian Vibes — Kupititsa Luso Patali. Music promotion, event promotion and digital marketing.">
+  <title>Malawian Vibes | Kupititsa Luso Patali</title>
+  <style>
+    :root{--gold:#f5c542;--red:#e33b35;--ink:#101014;--panel:#1b1b22;--muted:#c5c5cc}
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--ink);color:#fff;line-height:1.6}
+    a{color:inherit;text-decoration:none}
+    .wrap{width:min(1120px,92%);margin:auto}
+    header{position:sticky;top:0;z-index:5;background:#101014ed;border-bottom:1px solid #ffffff1a;backdrop-filter:blur(10px)}
+    nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .logo{font-weight:900;font-size:1.25rem;letter-spacing:1px}.logo span{color:var(--gold)}
+    .links{display:flex;gap:22px;font-size:.92rem;color:#eee}.links a:hover{color:var(--gold)}
+    .hero{padding:100px 0 90px;background:radial-gradient(circle at 80% 20%,#7c2626 0,transparent 32%),linear-gradient(135deg,#17171d,#09090c)}
+    .tag{display:inline-block;border:1px solid #f5c54288;color:var(--gold);padding:7px 13px;border-radius:30px;font-weight:bold;font-size:.85rem}
+    h1{font-size:clamp(2.8rem,8vw,5.6rem);line-height:.98;margin:22px 0 16px;max-width:850px}
+    h1 span{color:var(--gold)} .hero p{font-size:1.15rem;color:var(--muted);max-width:620px}
+    .actions{display:flex;flex-wrap:wrap;gap:13px;margin-top:28px}
+    .btn{display:inline-block;padding:13px 21px;border-radius:8px;font-weight:bold}
+    .primary{background:var(--gold);color:#151515}.secondary{border:1px solid #ffffff66}
+    section{padding:72px 0}.eyebrow{color:var(--gold);font-weight:bold;text-transform:uppercase;letter-spacing:2px;font-size:.8rem}
+    h2{font-size:clamp(2rem,5vw,3rem);margin:8px 0 12px}.intro{color:var(--muted);max-width:650px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:30px}
+    .card{background:var(--panel);border:1px solid #ffffff14;border-radius:14px;padding:24px}
+    .icon{font-size:2rem}.card h3{margin:12px 0 8px}.card p{color:var(--muted);margin:0}
+    .services{background:#15151b}
+    .service-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:28px}
+    .service{padding:15px 17px;border-radius:9px;background:#202027;border-left:3px solid var(--gold)}
+    .contact-box{background:linear-gradient(120deg,#542020,#1b1b22 70%);border:1px solid #ffffff20;border-radius:18px;padding:34px}
+    .contact-box p{color:#eee}.contact-number{font-size:clamp(1.4rem,4vw,2rem);font-weight:800;color:var(--gold);margin:12px 0}
+    footer{padding:25px 0;border-top:1px solid #ffffff18;color:#aaa;text-align:center;font-size:.9rem}
+    @media(max-width:760px){.links{gap:12px;font-size:.8rem}.grid{grid-template-columns:1fr}.service-list{grid-template-columns:1fr}.hero{padding:76px 0}.contact-box{padding:24px}}
+    @media(max-width:430px){nav{align-items:flex-start;padding:15px 0;flex-direction:column}.links{flex-wrap:wrap}}
+  </style>
 </head>
 <body>
-
 <header>
-<div class="logo">MALAWIAN <span>VIBES</span>
-<small>KUPITITSA LUSO PATAlI</small></div>
-<nav>
-<a href="#discover">Discover</a>
-<a href="#player">Music Player</a>
-</nav>
+  <nav class="wrap">
+    <a class="logo" href="#home">MALAWIAN <span>VIBES</span></a>
+    <div class="links">
+      <a href="#about">About</a><a href="#services">Services</a><a href="#contact">Contact</a>
+    </div>
+  </nav>
 </header>
 
-<section class="hero">
-<h1>FEEL THE <span>VIBES.</span></h1>
-<p>Discover and enjoy the best Malawian music.</p>
-<input class="search" id="search" placeholder="Search songs or artists..." oninput="renderSongs()">
-</section>
+<main>
+  <section class="hero" id="home">
+    <div class="wrap">
+      <span class="tag">🇲🇼 KUPITITSA LUSO PATAlI</span>
+      <h1>Your Talent.<br><span>Our Promotion.</span></h1>
+      <p>Malawian Vibes helps artists, event organisers and businesses reach more people through music promotion, event promotion and digital marketing.</p>
+      <div class="actions">
+        <a class="btn primary" href="https://wa.me/27679931023" target="_blank" rel="noopener">Promote With Us on WhatsApp</a>
+        <a class="btn secondary" href="#services">Explore Our Services</a>
+      </div>
+    </div>
+  </section>
 
-<main class="container" id="discover">
-<div class="section-title">
-<h2>Discover Music</h2>
-<label class="upload">＋ Add Music
-<input type="file" id="upload" accept="audio/*" multiple hidden>
-</label>
-</div>
-<p style="color:#aaa">Listen to your favourite music on MALAWIAN VIBES.</p>
-<div id="songs">
-<div style="color:#aaa">Add audio files to start listening.</div>
-</div>
+  <section id="about">
+    <div class="wrap">
+      <div class="eyebrow">Who we are</div>
+      <h2>We take your talent further.</h2>
+      <p class="intro">Malawian Vibes is a promotion and creative-services brand focused on giving music, events and businesses more visibility. Our mission is simple: <strong>Kupititsa Luso Patali.</strong></p>
+    </div>
+  </section>
+
+  <section class="services" id="services">
+    <div class="wrap">
+      <div class="eyebrow">What we do</div>
+      <h2>Our Services</h2>
+      <p class="intro">Creative support and promotion to help your brand stand out.</p>
+      <div class="grid">
+        <article class="card"><div class="icon">🎵</div><h3>Music Promotion</h3><p>Music uploads and promotion, video promotion, lyric videos and digital music distribution.</p></article>
+        <article class="card"><div class="icon">🎤</div><h3>Event Promotion</h3><p>Show promotion, event publicity, promotional artwork and campaigns to reach your audience.</p></article>
+        <article class="card"><div class="icon">📱</div><h3>Digital Marketing</h3><p>Facebook page promotion, WhatsApp channel and group promotion, and business advertising.</p></article>
+      </div>
+      <div class="service-list">
+        <div class="service">Music upload and promotion</div>
+        <div class="service">Video promotion and video lyrics</div>
+        <div class="service">Artwork, logo and T-shirt design</div>
+        <div class="service">Beat tag removal</div>
+        <div class="service">Facebook page promotion</div>
+        <div class="service">WhatsApp channel and group promotion</div>
+        <div class="service">Business advertising</div>
+        <div class="service">Distribution to digital platforms</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact-box">
+        <div class="eyebrow">Let's work together</div>
+        <h2>Ready to take your talent further?</h2>
+        <p>Contact Malawian Vibes for promotions, designs and advertising enquiries.</p>
+        <div class="contact-number">+27 67 993 1023</div>
+        <a class="btn primary" href="https://wa.me/27679931023" target="_blank" rel="noopener">Chat With Us on WhatsApp</a>
+      </div>
+    </div>
+  </section>
 </main>
 
-<div class="player" id="player">
-<div id="now">
-<strong>MALAWIAN VIBES</strong>
-<small id="artist">Choose a song to play</small>
-</div>
-<div class="controls">
-<button onclick="previousSong()">⏮</button>
-<button onclick="togglePlay()" id="play">▶</button>
-<button onclick="nextSong()">⏭</button>
-</div>
-<input type="range" id="volume" min="0" max="1" step="0.01" value="0.8" aria-label="Volume">
-<audio id="audio"></audio>
-<div style="width:100%;display:flex;align-items:center;gap:10px">
-<span id="current">0:00</span>
-<input type="range" id="progress" min="0" max="100" value="0" aria-label="Song progress">
-<span id="duration">0:00</span>
-</div>
-</div>
-
-<footer>
-<strong style="color:#e6b72e">MALAWIAN VIBES</strong>
-<p>Kupititsa Luso Patali 🇲🇼</p>
-<p>© 2026 MALAWIAN VIBES. All rights reserved.</p>
-</footer>
-
-<script>
-const audio=document.getElementById('audio');
-let songs=[];
-let currentIndex=-1;
-
-function formatTime(seconds){
-if(!Number.isFinite(seconds))return '0:00';
-let m=Math.floor(seconds/60);
-let s=Math.floor(seconds%60);
-return m+':'+String(s).padStart(2,'0');
-}
-
-document.getElementById('upload').addEventListener('change',function(e){
-[...e.target.files].forEach(file=>{
-songs.push({name:file.name.replace(/\.[^/.]+$/,''),artist:'Local Music',url:URL.createObjectURL(file)});
-});
-renderSongs();
-});
-
-function renderSongs(){
-let query=document.getElementById('search').value.toLowerCase();
-let container=document.getElementById('songs');
-container.innerHTML='';
-let filtered=songs.map((song,index)=>({song,index})).filter(x=>x.song.name.toLowerCase().includes(query));
-if(!filtered.length){
-container.innerHTML='<p style="color:#aaa">No songs found. Use Add Music to select audio files.</p>';
-return;
-}
-filtered.forEach(({song,index})=>{
-let card=document.createElement('div');
-card.className='song';
-let cover=document.createElement('div');
-cover.className='cover';
-cover.textContent='♫';
-let title=document.createElement('h3');
-title.textContent=song.name;
-let artist=document.createElement('p');
-artist.textContent=song.artist;
-let btn=document.createElement('button');
-btn.textContent='▶ Play Song';
-btn.onclick=()=>playSong(index);
-card.append(cover,title,artist,btn);
-container.appendChild(card);
-});
-}
-
-function playSong(index){
-currentIndex=index;
-audio.src=songs[index].url;
-audio.play();
-document.getElementById('now').querySelector('strong').textContent=songs[index].name;
-document.getElementById('artist').textContent=songs[index].artist;
-document.getElementById('play').textContent='Ⅱ';
-}
-
-function togglePlay(){
-if(!audio.src)return;
-if(audio.paused){audio.play();document.getElementById('play').textContent='Ⅱ';}
-else{audio.pause();document.getElementById('play').textContent='▶';}
-}
-
-function nextSong(){
-if(songs.length)playSong((currentIndex+1)%songs.length);
-}
-function previousSong(){
-if(songs.length)playSong((currentIndex-1+songs.length)%songs.length);
-}
-
-audio.addEventListener('timeupdate',()=>{
-document.getElementById('current').textContent=formatTime(audio.currentTime);
-document.getElementById('duration').textContent=formatTime(audio.duration);
-document.getElementById('progress').value=audio.duration?(audio.currentTime/audio.duration)*100:0;
-});
-
-document.getElementById('progress').addEventListener('input',function(){
-if(audio.duration)audio.currentTime=(this.value/100)*audio.duration;
-});
-
-document.getElementById('volume').addEventListener('input',function(){
-audio.volume=this.value;
-});
-
-audio.addEventListener('ended',nextSong);
-</script>
+<footer><div class="wrap">© <span id="year"></span> Malawian Vibes · Kupititsa Luso Patali</div></footer>
+<script>document.getElementById('year').textContent=new Date().getFullYear();</script>
 </body>
 </html>
