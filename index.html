@@ -1,104 +1,358 @@
+
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#087a3e">
+  <meta name="description" content="Discover and support Malawi music and artists.">
   <title>Malawian Vibes — Kupititsa luso patali</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+
 <header class="topbar">
-  <a class="brand" href="#"><span class="flag-mark">M</span><span>MALAWIAN <b>VIBES</b><small>Kupititsa luso patali</small></span></a>
-  <nav><a href="#discover">Discover</a><a href="#artist">Artist</a><a href="#contact">Contact</a></nav>
+  <a class="brand" href="#">
+    <span class="flag-mark">M</span>
+    <span>MALAWIAN <b>VIBES</b><small>Kupititsa luso patali</small></span>
+  </a>
+  <nav>
+    <a href="#discover">Discover</a>
+    <a href="#top10">Top 10</a>
+    <a href="#artist">Artist</a>
+    <a href="#contact">Contact</a>
+  </nav>
   <button id="logoutBtn" class="button ghost hidden">Log out</button>
 </header>
 
 <main>
+
+  <!-- HERO -->
   <section class="hero">
     <div class="hero-copy">
       <p class="eyebrow">MALAWI MUSIC • MALAWI TALENT</p>
       <h1>Nyimbo zathu.<br><span>Luso lathu.</span></h1>
-      <p class="lead">Malo olumikiza ojambula ndi okonda nyimbo ku Malawi ndi kupitirira.</p>
+      <p class="lead">
+        Malo olumikiza ojambula ndi okonda nyimbo ku Malawi ndi kupitirira.
+      </p>
       <a class="button" href="#discover">Mvetserani nyimbo</a>
     </div>
+
     <div class="hero-card">
-      <div class="sound-bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <p>SUPPORT MALAWI ARTISTS</p><strong>MK 3,000</strong><small>per music upload</small>
+      <div class="sound-bars">
+        <i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i>
+      </div>
+      <p>SUPPORT MALAWI ARTISTS</p>
+      <strong>MK 3,000</strong>
+      <small>per music upload</small>
     </div>
   </section>
 
-  <section id="discover" class="section">
-    <div class="section-heading"><div><p class="eyebrow">LISTEN & DISCOVER</p><h2>Discover Music</h2></div><button id="refreshTracks" class="button ghost">Refresh</button></div>
-    <div id="trackList" class="track-grid"><p class="muted">Nyimbo zovomerezeka zidzaoneka pano.</p></div>
+  <!-- TOP 10 -->
+  <section id="top10" class="section">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">MALAWI MUSIC CHARTS</p>
+        <h2>Top 10 Songs</h2>
+      </div>
+    </div>
+    <div id="top10List" class="track-grid">
+      <p class="muted">Top 10 songs will appear here.</p>
+    </div>
   </section>
 
+  <!-- TRENDING -->
+  <section id="trending" class="section">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">WHAT'S HOT</p>
+        <h2>Trending Now</h2>
+      </div>
+    </div>
+    <div id="trendingList" class="track-grid">
+      <p class="muted">Trending songs will appear here.</p>
+    </div>
+  </section>
+
+  <!-- DISCOVER -->
+  <section id="discover" class="section">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">LISTEN & DISCOVER</p>
+        <h2>Discover Music</h2>
+      </div>
+      <button id="refreshTracks" class="button ghost">Refresh</button>
+    </div>
+    <div id="trackList" class="track-grid">
+      <p class="muted">Nyimbo zovomerezeka zidzaoneka pano.</p>
+    </div>
+  </section>
+
+  <!-- ARTIST LOGIN AND REGISTER -->
   <section id="artist" class="section two-col">
     <div>
-      <p class="eyebrow">FOR ARTISTS</p><h2>Artist Studio</h2>
-      <p class="muted">Pangani account, kwezani nyimbo yanu, kenako tumizani payment reference kuti Admin atsimikizire malipiro.</p>
-      <div class="price-box"><span>Upload fee</span><strong>MK 3,000</strong><small>Pa nyimbo iliyonse</small></div>
-      <div id="accountStatus" class="notice">Lowani kapena pangani account kuti mugwiritse ntchito Artist Studio.</div>
+      <p class="eyebrow">FOR ARTISTS</p>
+      <h2>Artist Studio</h2>
+      <p class="muted">
+        Pangani account, kwezani nyimbo yanu, kenako tumizani payment
+        reference kuti Admin atsimikizire malipiro.
+      </p>
+
+      <div class="price-box">
+        <span>Upload fee</span>
+        <strong>MK 3,000</strong>
+        <small>Pa nyimbo iliyonse</small>
+      </div>
+
+      <div id="accountStatus" class="notice">
+        Lowani kapena pangani account kuti mugwiritse ntchito Artist Studio.
+      </div>
     </div>
+
     <div class="panel">
-      <div class="tabs"><button class="tab active" data-tab="loginPanel">Login</button><button class="tab" data-tab="registerPanel">Register</button></div>
+      <div class="tabs">
+        <button class="tab active" data-tab="loginPanel">Login</button>
+        <button class="tab" data-tab="registerPanel">Register</button>
+      </div>
+
       <form id="loginPanel" class="form">
-        <label>Email<input id="loginEmail" type="email" required autocomplete="email"></label>
-        <label>Password<input id="loginPassword" type="password" required autocomplete="current-password"></label>
+        <label>
+          Email
+          <input id="loginEmail" type="email" required autocomplete="email">
+        </label>
+        <label>
+          Password
+          <input id="loginPassword" type="password" required autocomplete="current-password">
+        </label>
         <button class="button full" type="submit">Login</button>
       </form>
+
       <form id="registerPanel" class="form hidden">
-        <label>Artist / Stage name<input id="artistName" required maxlength="80"></label>
-        <label>Email<input id="registerEmail" type="email" required autocomplete="email"></label>
-        <label>Password<input id="registerPassword" type="password" minlength="8" required autocomplete="new-password"></label>
+        <label>
+          Artist / Stage name
+          <input id="artistName" required maxlength="80">
+        </label>
+        <label>
+          Email
+          <input id="registerEmail" type="email" required autocomplete="email">
+        </label>
+        <label>
+          Password
+          <input id="registerPassword" type="password" minlength="8" required autocomplete="new-password">
+        </label>
         <button class="button full" type="submit">Create artist account</button>
       </form>
     </div>
   </section>
 
+  <!-- ARTIST DASHBOARD -->
   <section id="artistDashboard" class="section hidden">
-    <div class="section-heading"><div><p class="eyebrow">YOUR MUSIC</p><h2>Artist Dashboard</h2></div></div>
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">YOUR MUSIC</p>
+        <h2>Artist Dashboard</h2>
+      </div>
+    </div>
+
+    <!-- ARTIST STATISTICS -->
+    <div class="panel">
+      <p class="eyebrow">YOUR PERFORMANCE</p>
+      <h3>Music Insights</h3>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span>Total Views</span>
+          <strong id="artistViews">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>Downloads</span>
+          <strong id="artistDownloads">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>My Songs</span>
+          <strong id="artistSongCount">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>Comments</span>
+          <strong id="artistComments">0</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p class="eyebrow">YOUR BEST MUSIC</p>
+      <h3>Best Performing Songs</h3>
+      <div id="artistBestSongs">
+        <p class="muted">Your song statistics will appear here.</p>
+      </div>
+    </div>
+
+    <!-- UPLOAD FORM -->
     <div class="panel">
       <form id="uploadForm" class="form">
         <h3>Upload a song</h3>
-        <label>Song title<input id="songTitle" required maxlength="120"></label>
-        <label>Genre
-          <select id="songGenre"><option>Afrobeat</option><option>Amapiano</option><option>Gospel</option><option>Hip-hop</option><option>R&B</option><option>Dancehall</option><option>Other</option></select>
+
+        <label>
+          Song title
+          <input id="songTitle" required maxlength="120">
         </label>
-        <label>Audio file (MP3 or WAV, max 25 MB)<input id="audioFile" type="file" accept=".mp3,.wav,audio/mpeg,audio/wav" required></label>
-        <label>Cover image (optional, JPG/PNG, max 5 MB)<input id="coverFile" type="file" accept="image/png,image/jpeg"></label>
+
+        <label>
+          Genre
+          <select id="songGenre">
+            <option>Afrobeat</option>
+            <option>Amapiano</option>
+            <option>Gospel</option>
+            <option>Hip-hop</option>
+            <option>R&B</option>
+            <option>Dancehall</option>
+            <option>Other</option>
+          </select>
+        </label>
+
+        <label>
+          Audio file (MP3 or WAV, max 25 MB)
+          <input id="audioFile" type="file" accept=".mp3,.wav,audio/mpeg,audio/wav" required>
+        </label>
+
+        <label>
+          Cover image (optional, JPG/PNG, max 5 MB)
+          <input id="coverFile" type="file" accept="image/png,image/jpeg">
+        </label>
+
         <div class="payment-instructions">
           <b>Upload fee: MK 3,000</b>
           <p>Airtel Money: <strong>0991801460</strong></p>
           <p>TNM Mpamba: <strong>0880 68 10 12</strong></p>
-          <small>Send the fee first, then enter the transaction reference below. Admin will verify receipt before approving the song. Do not enter your PIN.</small>
+          <small>
+            Send the fee first, then enter the transaction reference below.
+            Admin will verify receipt before approving the song.
+            Do not enter your PIN.
+          </small>
         </div>
-        <label>Payment method<select id="paymentMethod"><option value="Airtel Money">Airtel Money</option><option value="TNM Mpamba">TNM Mpamba</option></select></label>
-        <label>Payment transaction/reference ID<input id="paymentReference" required maxlength="100" placeholder="Enter reference from payment message"></label>
-        <button class="button full" type="submit">Submit song & payment reference</button>
+
+        <label>
+          Payment method
+          <select id="paymentMethod">
+            <option value="Airtel Money">Airtel Money</option>
+            <option value="TNM Mpamba">TNM Mpamba</option>
+          </select>
+        </label>
+
+        <label>
+          Payment transaction/reference ID
+          <input id="paymentReference" required maxlength="100" placeholder="Enter reference from payment message">
+        </label>
+
+        <button class="button full" type="submit">
+          Submit song & payment reference
+        </button>
+
         <p id="uploadMessage" class="form-message" aria-live="polite"></p>
       </form>
     </div>
-    <h3 class="subhead">My uploads</h3><div id="myTracks" class="track-grid"></div>
+
+    <h3 class="subhead">My uploads</h3>
+    <div id="myTracks" class="track-grid"></div>
   </section>
 
+  <!-- ADMIN DASHBOARD -->
   <section id="adminDashboard" class="section hidden">
-    <p class="eyebrow">PRIVATE AREA</p><h2>Admin Dashboard</h2>
-    <div class="notice warning">Only the account you promote to admin in Supabase can use this dashboard. Verify each payment in your actual mobile-money account before approving.</div>
+    <p class="eyebrow">PRIVATE AREA</p>
+    <h2>Admin Dashboard</h2>
+
+    <div class="notice warning">
+      Only the account you promote to admin in Supabase can use this dashboard.
+      Verify each payment in your actual mobile-money account before approving.
+    </div>
+
+    <!-- ADMIN STATISTICS -->
+    <div class="panel">
+      <p class="eyebrow">PLATFORM PERFORMANCE</p>
+      <h3>Website Overview</h3>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span>Total Artists</span>
+          <strong id="adminArtistCount">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>Total Songs</span>
+          <strong id="adminSongCount">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>Total Views</span>
+          <strong id="adminViews">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>Total Downloads</span>
+          <strong id="adminDownloads">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>Pending Payments</span>
+          <strong id="adminPendingPayments">0</strong>
+        </div>
+        <div class="stat-card">
+          <span>Comments</span>
+          <strong id="adminCommentCount">0</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN CHARTS -->
+    <div class="panel">
+      <h3>Platform Analytics</h3>
+      <div id="adminAnalytics">
+        <p class="muted">Platform analytics will appear here.</p>
+      </div>
+    </div>
+
+    <!-- PAYMENT APPROVAL -->
+    <h3 class="subhead">Payment Requests</h3>
     <div id="adminPayments" class="admin-list"></div>
-    <h3 class="subhead">Tracks awaiting review</h3><div id="adminTracks" class="admin-list"></div>
+
+    <!-- TRACK APPROVAL -->
+    <h3 class="subhead">Tracks awaiting review</h3>
+    <div id="adminTracks" class="admin-list"></div>
+
+    <!-- COMMENT MODERATION -->
+    <h3 class="subhead">Comment Moderation</h3>
+    <div id="adminComments" class="admin-list">
+      <p class="muted">Comments awaiting moderation will appear here.</p>
+    </div>
+
+    <!-- ADMIN TOP SONGS -->
+    <h3 class="subhead">Most Popular Songs</h3>
+    <div id="adminTopSongs" class="admin-list">
+      <p class="muted">Popular songs statistics will appear here.</p>
+    </div>
   </section>
 
+  <!-- CONTACT -->
   <section id="contact" class="contact section">
-    <p class="eyebrow">GET IN TOUCH</p><h2>Join the Vibes</h2>
-    <p>WhatsApp: <a href="https://wa.me/27679931023" target="_blank" rel="noopener">+27 67 993 1023</a></p>
+    <p class="eyebrow">GET IN TOUCH</p>
+    <h2>Join the Vibes</h2>
+    <p>
+      WhatsApp:
+      <a href="https://wa.me/27679931023" target="_blank" rel="noopener">
+        +27 67 993 1023
+      </a>
+    </p>
     <p class="tagline">MALAWIAN VIBES — Kupititsa luso patali</p>
   </section>
+
 </main>
-<footer>© <span id="year"></span> Malawian Vibes. Supporting Malawi talent.</footer>
+
+<footer>
+  © <span id="year"></span> Malawian Vibes. Supporting Malawi talent.
+</footer>
+
 <div id="toast" role="status" class="toast hidden"></div>
+
 <script src="config.js"></script>
 <script src="app.js"></script>
+
 </body>
 </html>
