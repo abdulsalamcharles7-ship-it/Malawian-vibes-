@@ -2,15 +2,20 @@
 (() => {
   const cfg = window.MV_CONFIG || {};
   const $ = id => document.getElementById(id);
-  $("year").textContent = new Date().getFullYear();
 
-  const configured = cfg.SUPABASE_URL && cfg.SUPABASE_ANON_KEY &&
+  if ($("year")) {
+    $("year").textContent = new Date().getFullYear();
+  }
+
+  const configured = cfg.SUPABASE_URL &&
+    cfg.SUPABASE_ANON_KEY &&
     !cfg.SUPABASE_URL.includes("PASTE_") &&
     !cfg.SUPABASE_ANON_KEY.includes("PASTE_");
 
-  let sb = null, session = null, profile = null;
+  let sb = null;
+  let session = null;
+  let profile = null;
   let publicTracks = [];
-  let rankings = [];
 
   if (configured && window.supabase) {
     sb = window.supabase.createClient(
@@ -18,26 +23,15 @@
       cfg.SUPABASE_ANON_KEY
     );
   } else {
-    $("accountStatus").textContent =
-      "Supabase sinakonzedwebe. Onani config.js.";
+    setText("accountStatus", "Supabase sinakonzedwebe. Onani config.js.");
   }
 
-  function toast(msg) {
+  function toast(message) {
     const el = $("toast");
-    el.textContent = msg;
+    if (!el) return;
+    el.textContent = message;
     el.classList.remove("hidden");
     setTimeout(() => el.classList.add("hidden"), 4500);
-  }
-
-  function money(n) {
-    return "MK " + Number(n || 0).toLocaleString("en-US");
-  }
-
-  function safe(s) {
-    return String(s ?? "").replace(/[&<>"']/g, c => ({
-      "&": "&amp;", "<": "&lt;", ">": "&gt;",
-      '"': "&quot;", "'": "&#39;"
-    }[c]));
   }
 
   function setText(id, value) {
@@ -48,12 +42,28 @@
     if ($(id)) $(id).innerHTML = value;
   }
 
+  function money(value) {
+    return "MK " + Number(value || 0).toLocaleString("en-US");
+  }
+
+  function safe(value) {
+    return String(value ?? "").replace(/[&<>"']/g, c => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[c]));
+  }
+
   function visitorId() {
     let id = localStorage.getItem("mv_visitor_id");
+
     if (!id) {
       id = crypto.randomUUID();
       localStorage.setItem("mv_visitor_id", id);
     }
+
     return id;
   }
 
@@ -71,22 +81,26 @@
 
   function showTab(id) {
     ["loginPanel", "registerPanel"].forEach(x => {
-      if ($(x)) $(x).classList.toggle("hidden", x !== id);
+      if ($(x)) {
+        $(x).classList.toggle("hidden", x !== id);
+      }
     });
 
-    document.querySelectorAll(".tab").forEach(b => {
-      b.classList.toggle("active", b.dataset.tab === id);
+    document.querySelectorAll(".tab").forEach(button => {
+      button.classList.toggle("active", button.dataset.tab === id);
     });
   }
 
-  document.querySelectorAll(".tab").forEach(b => {
-    b.addEventListener("click", () => showTab(b.dataset.tab));
+  document.querySelectorAll(".tab").forEach(button => {
+    button.addEventListener("click", () => {
+      showTab(button.dataset.tab);
+    });
   });
 
   async function loadProfile() {
     if (!sb || !session) return;
 
-    $("accountStatus").textContent = "Tikukonzekera account yanu...";
+    setText("accountStatus", "Tikukonzekera account yanu...");
 
     const { data, error } = await sb.from("profiles")
       .select("*")
@@ -100,34 +114,40 @@
 
     profile = data;
 
-    $("accountStatus").textContent =
-      `Logged in as ${profile.artist_name || session.user.email}`;
+    setText(
+      "accountStatus",
+      `Logged in as ${profile.artist_name || session.user.email}`
+    );
 
-    $("artistDashboard").classList.remove("hidden");
-    $("logoutBtn").classList.remove("hidden");
+    $("artistDashboard")?.classList.remove("hidden");
+    $("logoutBtn")?.classList.remove("hidden");
 
     if (profile.role === "admin") {
-      $("adminDashboard").classList.remove("hidden");
+      $("adminDashboard")?.classList.remove("hidden");
       await loadAdmin();
     } else {
-      $("adminDashboard").classList.add("hidden");
+      $("adminDashboard")?.classList.add("hidden");
     }
 
     await loadMyTracks();
   }
 
-  async function authChanged(s) {
-    session = s;
+  async function authChanged(newSession) {
+    session = newSession;
 
-    if (s) {
+    if (session) {
       await loadProfile();
     } else {
       profile = null;
-      $("artistDashboard").classList.add("hidden");
-      $("adminDashboard").classList.add("hidden");
-      $("logoutBtn").classList.add("hidden");
-      $("accountStatus").textContent =
-        "Lowani kapena pangani account kuti mugwiritse ntchito Artist Studio.";
+
+      $("artistDashboard")?.classList.add("hidden");
+      $("adminDashboard")?.classList.add("hidden");
+      $("logoutBtn")?.classList.add("hidden");
+
+      setText(
+        "accountStatus",
+        "Lowani kapena pangani account kuti mugwiritse ntchito Artist Studio."
+      );
     }
   }
 
@@ -137,141 +157,175 @@
       authChanged(data.session);
     });
 
-    sb.auth.onAuthStateChange((_event, s) => {
-      Promise.resolve().then(() => authChanged(s));
+    sb.auth.onAuthStateChange((_event, newSession) => {
+      Promise.resolve().then(() => authChanged(newSession));
     });
   }
 
-  $("registerPanel").addEventListener("submit", async e => {
-    e.preventDefault();
-    if (!sb) return toast("Ikani Supabase settings mu config.js.");
+  if ($("registerPanel")) {
+    $("registerPanel").addEventListener("submit", async e => {
+      e.preventDefault();
 
-    const name = $("artistName").value.trim();
-    const email = $("registerEmail").value.trim();
-    const password = $("registerPassword").value;
+      if (!sb) {
+        return toast("Ikani Supabase settings mu config.js.");
+      }
 
-    const { data, error } = await sb.auth.signUp({
-      email,
-      password,
-      options: { data: { artist_name: name } }
+      const name = $("artistName").value.trim();
+      const email = $("registerEmail").value.trim();
+      const password = $("registerPassword").value;
+
+      const { data, error } = await sb.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { artist_name: name }
+        }
+      });
+
+      if (error) return toast(error.message);
+
+      toast(data.session
+        ? "Account yapangidwa."
+        : "Account yapangidwa. Yang'anani email yanu.");
     });
+  }
 
-    if (error) return toast(error.message);
+  if ($("loginPanel")) {
+    $("loginPanel").addEventListener("submit", async e => {
+      e.preventDefault();
 
-    toast(data.session
-      ? "Account yapangidwa."
-      : "Account yapangidwa. Yang'anani email yanu.");
-  });
+      if (!sb) {
+        return toast("Ikani Supabase settings mu config.js.");
+      }
 
-  $("loginPanel").addEventListener("submit", async e => {
-    e.preventDefault();
-    if (!sb) return toast("Ikani Supabase settings mu config.js.");
+      const { error } = await sb.auth.signInWithPassword({
+        email: $("loginEmail").value.trim(),
+        password: $("loginPassword").value
+      });
 
-    const { error } = await sb.auth.signInWithPassword({
-      email: $("loginEmail").value.trim(),
-      password: $("loginPassword").value
+      if (error) toast(error.message);
+      else toast("Mwalowa bwino.");
     });
+  }
 
-    if (error) toast(error.message);
-    else toast("Mwalowa bwino.");
-  });
-
-  $("logoutBtn").addEventListener("click", async () => {
+  $("logoutBtn")?.addEventListener("click", async () => {
     if (sb) await sb.auth.signOut();
   });
 
   async function uploadTo(bucket, file, path) {
-    const { error } = await sb.storage.from(bucket).upload(path, file, {
-      upsert: false,
-      contentType: file.type
-    });
+    const { error } = await sb.storage.from(bucket).upload(
+      path,
+      file,
+      {
+        upsert: false,
+        contentType: file.type
+      }
+    );
 
     if (error) throw error;
     return path;
   }
 
-  $("uploadForm").addEventListener("submit", async e => {
-    e.preventDefault();
+  if ($("uploadForm")) {
+    $("uploadForm").addEventListener("submit", async e => {
+      e.preventDefault();
 
-    if (!sb || !session || !profile) {
-      return toast("Lowani kaye mu account yanu.");
-    }
-
-    const audio = $("audioFile").files[0];
-    const cover = $("coverFile").files[0];
-
-    if (!audio) return toast("Sankhani audio file.");
-    if (audio.size > 25 * 1024 * 1024) {
-      return toast("Audio iyenera kukhala yochepera 25 MB.");
-    }
-    if (cover && cover.size > 5 * 1024 * 1024) {
-      return toast("Cover iyenera kukhala yochepera 5 MB.");
-    }
-
-    const ref = $("paymentReference").value.trim();
-    if (!ref) return toast("Lowetsani payment reference.");
-
-    const btn = e.submitter;
-    btn.disabled = true;
-    btn.textContent = "Submitting...";
-
-    try {
-      const id = crypto.randomUUID();
-      const audioPath =
-        `${session.user.id}/${id}/${audio.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-
-      await uploadTo("music", audio, audioPath);
-
-      let coverPath = null;
-
-      if (cover) {
-        coverPath =
-          `${session.user.id}/${id}/${cover.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
-        await uploadTo("covers", cover, coverPath);
+      if (!sb || !session || !profile) {
+        return toast("Lowani kaye mu account yanu.");
       }
 
-      const { data: track, error: trackErr } = await sb.from("tracks")
-        .insert({
-          id,
-          artist_id: session.user.id,
-          title: $("songTitle").value.trim(),
-          genre: $("songGenre").value,
-          audio_path: audioPath,
-          cover_path: coverPath,
-          status: "pending_payment"
-        })
-        .select()
-        .single();
+      const audio = $("audioFile").files[0];
+      const cover = $("coverFile").files[0];
 
-      if (trackErr) throw trackErr;
+      if (!audio) return toast("Sankhani audio file.");
 
-      const { error: payErr } = await sb.from("payment_requests")
-        .insert({
-          artist_id: session.user.id,
-          track_id: track.id,
-          amount_mwk: 3000,
-          method: $("paymentMethod").value,
-          transaction_reference: ref,
-          status: "pending"
-        });
+      if (audio.size > 25 * 1024 * 1024) {
+        return toast("Audio iyenera kukhala yochepera 25 MB.");
+      }
 
-      if (payErr) throw payErr;
+      if (cover && cover.size > 5 * 1024 * 1024) {
+        return toast("Cover iyenera kukhala yochepera 5 MB.");
+      }
 
-      $("uploadMessage").textContent =
-        "Zatumizidwa. Admin ayenera kutsimikizira payment.";
+      const ref = $("paymentReference").value.trim();
 
-      $("uploadForm").reset();
-      await loadMyTracks();
-      toast("Upload request yaperekedwa.");
+      if (!ref) {
+        return toast("Lowetsani payment reference.");
+      }
 
-    } catch (err) {
-      console.error(err);
-      toast("Vuto: " + err.message);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Submit song & payment reference";
-    }
-  });
+      const btn = e.submitter;
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Submitting...";
+      }
+
+      try {
+        const id = crypto.randomUUID();
+
+        const audioPath =
+          `${session.user.id}/${id}/${audio.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+
+        await uploadTo("music", audio, audioPath);
+
+        let coverPath = null;
+
+        if (cover) {
+          coverPath =
+            `${session.user.id}/${id}/${cover.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+
+          await uploadTo("covers", cover, coverPath);
+        }
+
+        const { data: track, error: trackErr } = await sb
+          .from("tracks")
+          .insert({
+            id,
+            artist_id: session.user.id,
+            title: $("songTitle").value.trim(),
+            genre: $("songGenre").value,
+            audio_path: audioPath,
+            cover_path: coverPath,
+            status: "pending_payment"
+          })
+          .select()
+          .single();
+
+        if (trackErr) throw trackErr;
+
+        const { error: payErr } = await sb
+          .from("payment_requests")
+          .insert({
+            artist_id: session.user.id,
+            track_id: track.id,
+            amount_mwk: 3000,
+            method: $("paymentMethod").value,
+            transaction_reference: ref,
+            status: "pending"
+          });
+
+        if (payErr) throw payErr;
+
+        setText(
+          "uploadMessage",
+          "Zatumizidwa. Admin ayenera kutsimikizira payment."
+        );
+
+        $("uploadForm").reset();
+
+        await loadMyTracks();
+        toast("Upload request yaperekedwa.");
+
+      } catch (err) {
+        console.error(err);
+        toast("Vuto: " + err.message);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = "Submit song & payment reference";
+        }
+      }
+    });
+  }
 
   async function loadMyTracks() {
     if (!sb || !session) return;
@@ -288,8 +342,8 @@
         <article class="track-card">
           <h3>${safe(t.title)}</h3>
           <p>${safe(t.genre)} · ${safe(t.status)}</p>
-          <p class="muted">Payment:
-            ${safe(t.payment_requests?.[0]?.status || "pending")}
+          <p class="muted">
+            Payment: ${safe(t.payment_requests?.[0]?.status || "pending")}
           </p>
         </article>
       `).join("")
@@ -337,13 +391,13 @@
 
     const counts = {};
 
-    events.forEach(e => {
-      if (!counts[e.track_id]) {
-        counts[e.track_id] = { views: 0, downloads: 0 };
+    events.forEach(event => {
+      if (!counts[event.track_id]) {
+        counts[event.track_id] = { views: 0, downloads: 0 };
       }
 
-      if (e.event_type === "view") counts[e.track_id].views++;
-      if (e.event_type === "download") counts[e.track_id].downloads++;
+      if (event.event_type === "view") counts[event.track_id].views++;
+      if (event.event_type === "download") counts[event.track_id].downloads++;
     });
 
     const best = [...tracks].sort((a, b) =>
@@ -367,21 +421,21 @@
 
     return data.map(c => `
       <p class="comment">
-        <b>${safe(c.author_name)}</b>:
-        ${safe(c.body)}
+        <b>${safe(c.author_name)}</b>: ${safe(c.body)}
       </p>
     `).join("");
   }
 
-  async function renderTrack(t) {
+  async function renderTrack(track) {
     const audio = sb.storage.from("music")
-      .getPublicUrl(t.audio_path).data.publicUrl;
+      .getPublicUrl(track.audio_path).data.publicUrl;
 
-    const cover = t.cover_path
-      ? sb.storage.from("covers").getPublicUrl(t.cover_path).data.publicUrl
+    const cover = track.cover_path
+      ? sb.storage.from("covers")
+          .getPublicUrl(track.cover_path).data.publicUrl
       : null;
 
-    const comments = await loadComments(t.id);
+    const comments = await loadComments(track.id);
 
     return `
       <article class="track-card">
@@ -391,22 +445,22 @@
             : "MV"}
         </div>
 
-        <h3>${safe(t.title)}</h3>
+        <h3>${safe(track.title)}</h3>
 
         <p class="muted">
-          ${safe(t.profiles?.artist_name || "Malawian Artist")}
-          · ${safe(t.genre)}
+          ${safe(track.profiles?.artist_name || "Malawian Artist")}
+          · ${safe(track.genre)}
         </p>
 
         <audio controls preload="none"
-          data-play-track="${t.id}"
+          data-play-track="${track.id}"
           src="${safe(audio)}"></audio>
 
         <p>
           <a href="${safe(audio)}"
             target="_blank"
             rel="noopener"
-            data-download-track="${t.id}">
+            data-download-track="${track.id}">
             Download song
           </a>
         </p>
@@ -415,9 +469,12 @@
           <h4>Comments</h4>
           ${comments || "<p>No approved comments yet.</p>"}
 
-          <form class="comment-form" data-comment-track="${t.id}">
-            <input name="author" placeholder="Your name" required maxlength="60">
-            <textarea name="body" placeholder="Write a comment..." required maxlength="500"></textarea>
+          <form class="comment-form" data-comment-track="${track.id}">
+            <input name="author" placeholder="Your name"
+              required maxlength="60">
+            <textarea name="body"
+              placeholder="Write a comment..."
+              required maxlength="500"></textarea>
             <button type="submit">Send comment</button>
           </form>
         </div>
@@ -437,6 +494,7 @@
       .order("created_at", { ascending: false });
 
     if (error) {
+      console.error(error.message);
       setHTML("trackList", "Sitingathe kutenga nyimbo panopa.");
       return;
     }
@@ -464,12 +522,13 @@
       return;
     }
 
-    rankings = data || [];
+    const rankings = data || [];
 
-    const ranked = publicTracks.map(t => {
-      const stats = rankings.find(r => r.track_id === t.id);
+    const ranked = publicTracks.map(track => {
+      const stats = rankings.find(r => r.track_id === track.id);
+
       return {
-        ...t,
+        ...track,
         views: Number(stats?.views || 0),
         downloads: Number(stats?.downloads || 0)
       };
@@ -484,8 +543,7 @@
       .slice(0, 5);
 
     setHTML("top10List", top.map((t, i) => `
-      <p>${i + 1}. <b>${safe(t.title)}</b>
-      — ${t.views} views</p>
+      <p>${i + 1}. <b>${safe(t.title)}</b> — ${t.views} views</p>
     `).join("") || "Palibe nyimbo pano.");
 
     setHTML("trendingList", trending.map(t => `
@@ -493,56 +551,58 @@
     `).join("") || "Palibe trending songs pano.");
   }
 
-  $("trackList").addEventListener("play", () => {});
-  $("trackList").addEventListener("click", async e => {
-    const download = e.target.closest("[data-download-track]");
+  if ($("trackList")) {
+    $("trackList").addEventListener("click", e => {
+      const download = e.target.closest("[data-download-track]");
 
-    if (download) {
-      recordEvent(download.dataset.downloadTrack, "download");
-    }
-  });
-
-  $("trackList").addEventListener("play", e => {
-    const audio = e.target.closest("audio[data-play-track]");
-    if (audio && !audio.dataset.counted) {
-      audio.dataset.counted = "yes";
-      recordEvent(audio.dataset.playTrack, "view");
-    }
-  }, true);
-
-  $("trackList").addEventListener("submit", async e => {
-    const form = e.target.closest(".comment-form");
-    if (!form) return;
-
-    e.preventDefault();
-
-    const trackId = form.dataset.commentTrack;
-    const author = form.elements.author.value.trim();
-    const body = form.elements.body.value.trim();
-
-    if (!author || !body) return;
-
-    const button = form.querySelector("button");
-    button.disabled = true;
-
-    const { error } = await sb.from("comments").insert({
-      track_id: trackId,
-      author_name: author,
-      body,
-      status: "pending"
+      if (download) {
+        recordEvent(download.dataset.downloadTrack, "download");
+      }
     });
 
-    button.disabled = false;
+    $("trackList").addEventListener("play", e => {
+      const audio = e.target.closest("audio[data-play-track]");
 
-    if (error) {
-      toast("Comment error: " + error.message);
-    } else {
-      form.reset();
-      toast("Comment yatumizidwa. Ikuyembekezera kuvomerezedwa ndi Admin.");
-    }
-  });
+      if (audio && !audio.dataset.counted) {
+        audio.dataset.counted = "yes";
+        recordEvent(audio.dataset.playTrack, "view");
+      }
+    }, true);
 
-  $("refreshTracks").addEventListener("click", loadPublicTracks);
+    $("trackList").addEventListener("submit", async e => {
+      const form = e.target.closest(".comment-form");
+      if (!form) return;
+
+      e.preventDefault();
+
+      const trackId = form.dataset.commentTrack;
+      const author = form.elements.author.value.trim();
+      const body = form.elements.body.value.trim();
+
+      if (!author || !body || !sb) return;
+
+      const button = form.querySelector("button");
+      button.disabled = true;
+
+      const { error } = await sb.from("comments").insert({
+        track_id: trackId,
+        author_name: author,
+        body,
+        status: "pending"
+      });
+
+      button.disabled = false;
+
+      if (error) {
+        toast("Comment error: " + error.message);
+      } else {
+        form.reset();
+        toast("Comment yatumizidwa. Ikuyembekezera kuvomerezedwa ndi Admin.");
+      }
+    });
+  }
+
+  $("refreshTracks")?.addEventListener("click", loadPublicTracks);
 
   async function loadAdmin() {
     if (!sb || !profile || profile.role !== "admin") return;
@@ -554,6 +614,7 @@
 
     if (error) {
       setHTML("adminPayments", "Admin data sinapezeke.");
+      console.error(error.message);
       return;
     }
 
@@ -561,10 +622,14 @@
       ? payments.map(p => `
         <div class="admin-item">
           <div>
-            <b>${safe(p.profiles?.artist_name || p.profiles?.email || "Artist")}
-            — ${safe(p.tracks?.title || "Song")}</b>
-            <p>${money(p.amount_mwk)} · ${safe(p.method)}
-            · Ref: ${safe(p.transaction_reference)}</p>
+            <b>
+              ${safe(p.profiles?.artist_name || p.profiles?.email || "Artist")}
+              — ${safe(p.tracks?.title || "Song")}
+            </b>
+            <p>
+              ${money(p.amount_mwk)} · ${safe(p.method)}
+              · Ref: ${safe(p.transaction_reference)}
+            </p>
           </div>
           <div class="admin-actions">
             <button class="approve" data-payment="${p.id}"
@@ -585,8 +650,7 @@
       ? tracks.map(t => `
         <div class="admin-item">
           <b>${safe(t.title)}</b>
-          <p>${safe(t.profiles?.artist_name || "Artist")}
-          · ${safe(t.genre)}</p>
+          <p>${safe(t.profiles?.artist_name || "Artist")} · ${safe(t.genre)}</p>
           <span>Waiting for payment verification</span>
         </div>
       `).join("")
@@ -597,15 +661,16 @@
   }
 
   async function loadAdminStats() {
-    const [artists, songs, views, downloads, pending, comments] =
-      await Promise.all([
-        sb.from("profiles").select("id", { count: "exact", head: true }).eq("role", "artist"),
-        sb.from("tracks").select("id", { count: "exact", head: true }),
-        sb.from("track_events").select("id", { count: "exact", head: true }).eq("event_type", "view"),
-        sb.from("track_events").select("id", { count: "exact", head: true }).eq("event_type", "download"),
-        sb.from("payment_requests").select("id", { count: "exact", head: true }).eq("status", "pending"),
-        sb.from("comments").select("id", { count: "exact", head: true }).eq("status", "pending")
-      ]);
+    const results = await Promise.all([
+      sb.from("profiles").select("id", { count: "exact", head: true }).eq("role", "artist"),
+      sb.from("tracks").select("id", { count: "exact", head: true }),
+      sb.from("track_events").select("id", { count: "exact", head: true }).eq("event_type", "view"),
+      sb.from("track_events").select("id", { count: "exact", head: true }).eq("event_type", "download"),
+      sb.from("payment_requests").select("id", { count: "exact", head: true }).eq("status", "pending"),
+      sb.from("comments").select("id", { count: "exact", head: true }).eq("status", "pending")
+    ]);
+
+    const [artists, songs, views, downloads, pending, comments] = results;
 
     setText("adminArtistCount", artists.count ?? "—");
     setText("adminSongCount", songs.count ?? "—");
@@ -658,37 +723,5 @@
       : '<p class="empty">Palibe comments zodikirira.</p>');
   }
 
-  $("adminDashboard").addEventListener("click", async e => {
-    const commentApprove = e.target.closest("[data-comment-approve]");
-    const commentReject = e.target.closest("[data-comment-reject]");
-
-    if (commentApprove || commentReject) {
-      const button = commentApprove || commentReject;
-      const id = button.dataset.commentApprove || button.dataset.commentReject;
-      const status = commentApprove ? "approved" : "rejected";
-
-      button.disabled = true;
-
-      const { error } = await sb.from("comments")
-        .update({ status })
-        .eq("id", id);
-
-      if (error) {
-        button.disabled = false;
-        return toast(error.message);
-      }
-
-      toast("Comment yasinthidwa.");
-      await loadAdminComments();
-      return;
-    }
-
-    const b = e.target.closest("button[data-payment]");
-    if (!b || !sb) return;
-
-    const approve = b.classList.contains("approve");
-    const paymentId = b.dataset.payment;
-    const trackId = b.dataset.track;
-
-    if (approve && !confirm(
-      "Mwayang'ana account yanu ndipo mwatsimikiza kuti 
+  if ($("adminDashboard")) {
+    $("adminDashboard").addEventListener("clic
