@@ -723,5 +723,73 @@
       : '<p class="empty">Palibe comments zodikirira.</p>');
   }
 
-  if ($("adminDashboard")) {
-    $("adminDashboard").addEventListener("clic
+  if     $("adminDashboard").addEventListener("click", async e => {
+      const approve = e.target.closest("[data-payment]");
+      const reject = e.target.closest("[data-payment]");
+
+      if (approve && approve.classList.contains("approve")) {
+        if (!confirm("Kodi mwatsimikizira kuti ndalama zalowa?")) return;
+
+        const paymentId = approve.dataset.payment;
+        const trackId = approve.dataset.track;
+
+        const { error } = await sb.from("payment_requests")
+          .update({ status: "approved" })
+          .eq("id", paymentId);
+
+        if (error) return toast(error.message);
+
+        const { error: trackError } = await sb.from("tracks")
+          .update({ status: "published" })
+          .eq("id", trackId);
+
+        if (trackError) return toast(trackError.message);
+
+        toast("Payment yavomerezedwa. Nyimbo yasindikizidwa.");
+        await loadAdmin();
+        await loadPublicTracks();
+      }
+
+      if (reject && reject.classList.contains("reject")) {
+        const paymentId = reject.dataset.payment;
+        const trackId = reject.dataset.track;
+
+        const { error } = await sb.from("payment_requests")
+          .update({ status: "rejected" })
+          .eq("id", paymentId);
+
+        if (error) return toast(error.message);
+
+        await sb.from("tracks")
+          .update({ status: "rejected" })
+          .eq("id", trackId);
+
+        toast("Payment request yakana.");
+        await loadAdmin();
+      }
+
+      const commentApprove = e.target.closest("[data-comment-approve]");
+      const commentReject = e.target.closest("[data-comment-reject]");
+
+      if (commentApprove || commentReject) {
+        const id = commentApprove
+          ? commentApprove.dataset.commentApprove
+          : commentReject.dataset.commentReject;
+
+        const status = commentApprove ? "approved" : "rejected";
+
+        const { error } = await sb.from("comments")
+          .update({ status })
+          .eq("id", id);
+
+        if (error) return toast(error.message);
+
+        toast("Comment yasinthidwa.");
+        await loadAdminComments();
+      }
+    });
+  }
+
+  loadPublicTracks();
+
+})();
