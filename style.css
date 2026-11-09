@@ -560,4 +560,81 @@ footer {
     font-size: 23px;
   }
   }
-  
+  /* MALAWIAN VIBES - PREMIUM MUSIC DESIGN */
+
+.track-card {
+  position: relative;
+  padding: 15px;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #203528, #111b14);
+  border: 1px solid rgba(245,197,66,.18);
+  box-shadow: 0 12px 30px rgba(0,0,0,.25);
+  transition: transform .25s, border-color .25s;
+}
+
+.track-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--gold);
+}
+
+.track-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-bottom: 12px;
+}
+
+.track-card h3 {
+  color: white;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.track-card p {
+  font-size: 13px;
+  margin: 5px 0;
+}
+
+.track-card audio {
+  width: 100%;
+  height: 42px;
+  margin-top: 14px;
+}
+
+.track-card .button {
+  margin-top: 10px;
+  border-radius: 30px;
+}
+
+.section-heading {
+  border-bottom: 1px solid rgba(245,197,66,.2);
+  padding-bottom: 15px;
+}
+
+.hero {
+  background:
+    radial-gradient(circle at 85% 30%, rgba(245,197,66,.13), transparent 30%),
+    radial-gradient(circle at 10% 80%, rgba(8,122,62,.3), transparent 40%),
+    linear-gradient(120deg, #080f0b, #17291c);
+}
+
+.button {
+  border-radius: 30px;
+  box-shadow: 0 5px 18px rgba(8,122,62,.2);
+}
+
+@media (max-width: 600px) {
+  .track-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .track-card {
+    padding: 10px;
+  }
+
+  .track-card h3 {
+    font-size: 15px;
+  }
+    }
